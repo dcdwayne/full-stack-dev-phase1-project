@@ -94,7 +94,6 @@
 
         .bar img {
             width: 80px;
-            height: 50px;
             align-self: stretch; /* Make image stretch to full bar height */
             object-fit: cover;
             flex-shrink: 0;
@@ -116,6 +115,38 @@
 
         .bar-one-third {
             flex: 1;
+        }
+
+        /* 漢堡選單圖標與側邊欄樣式 */
+        .burger-icon {
+            display: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -250px; /* 預設隱藏在右側畫面外 */
+            width: 250px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 20px;
+            transition: right 0.3s ease;
+        }
+
+        .side-menu.active {
+            right: 0; /* 激活時滑入 */
+        }
+
+        .close-icon {
+            text-align: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-bottom: 20px;
         }
 
         /* Content Blocks Section */
@@ -174,6 +205,48 @@
             line-height: 1.4;
         }
 
+        /* 響應式設計: 360px < screen width <= 600px */
+        @media (min-width: 361px) and (max-width: 600px) {
+            .navbar-menu {
+                display: none; /* 隱藏原本的選單項目 */
+            }
+
+            .burger-icon {
+                display: block; /* 顯示漢堡圖標 */
+            }
+
+            .main-content {
+                width: 90%;
+            }
+
+            /* Bars 調整為單欄全寬 */
+            .bars-section, .bar-row-2 {
+                flex-direction: column;
+            }
+
+            .bar {
+                width: 100%;
+            }
+
+            /* Content Blocks 調整為單欄全寬 */
+            .content-blocks {
+                grid-template-columns: 1fr;
+            }
+
+            /* 圖片維持原始比例且不變形 */
+            .bar img {
+                width: 80px;
+                height: auto;
+                object-fit: contain;
+            }
+
+            .block .bg-image {
+                width: 100%;
+                height: auto;
+                object-fit: contain;
+            }
+        }
+
         /* 響應式設計: 600px < screen width <= 1200px */
         @media (min-width: 601px) and (max-width: 1200px) {
             .main-content {
@@ -202,7 +275,6 @@
 
             .bar img {
                 width: 80px;
-                height: 50px;
                 object-fit: contain; /* 維持原始比例 */
             }
 
@@ -233,8 +305,21 @@
                 <li><a href="#">Item 3</a></li>
                 <li><a href="#">Item 4</a></li>
             </ul>
+            <!-- 漢堡選單圖標 -->
+            <img src="burger.png" alt="Menu" class="burger-icon" id="burgerBtn">
         </nav>
     </header>
+
+    <!-- 彈出式側邊選單 -->
+    <div class="side-menu" id="sideMenu">
+        <div class="close-icon" id="closeBtn">&times;</div>
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 1</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 2</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 3</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 4</a></li>
+        </ul>
+    </div>
 
     <div class="welcome-section">
         <h1>Welcome to Gantz Space</h1>
@@ -274,5 +359,15 @@
             <div class="block" id="block10"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 10"><span class="star">★</span><div class="text-overlay"><p>Room 10</p></div></div>
         </section>
     </main>
+
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const sideMenu = document.getElementById('sideMenu');
+
+        // 控制側邊選單開關
+        burgerBtn.onclick = () => sideMenu.classList.add('active');
+        closeBtn.onclick = () => sideMenu.classList.remove('active');
+    </script>
 </body>
 </html>
