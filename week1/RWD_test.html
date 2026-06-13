@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="En">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RWD Test</title>
+    <style>
+        /* General & Base Styles */
+        :root {
+            --base-spacing: 20px;
+        }
+
+        html {
+            font-size: 20px;
+        }
+
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f0f0f0; /* Color for blank sides */
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .navbar-title {
+            font-weight: bold;
+            font-size: 1.5rem; /* 30px */
+        }
+
+        .navbar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 30px;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem; /* 20px */
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background-color: #ddeef8;
+            font-weight: bold;
+            font-size: 2rem; /* 40px */
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            margin: 0;
+        }
+
+        /* Main Content Wrapper */
+        .main-content {
+            max-width: 1200px;
+            margin: var(--base-spacing) auto;
+        }
+
+        /* Bars Section */
+        .bars-section {
+            display: flex;
+            flex-direction: column;
+            gap: var(--base-spacing);
+            margin-bottom: var(--base-spacing);
+        }
+
+        .bar {
+            display: flex;
+            align-items: center;
+            background-color: #ccdde8;
+            border: 1px solid #ddd;
+            overflow: hidden; /* Ensures border contains children */
+        }
+
+        .bar img {
+            width: 80px;
+            height: 50px;
+            align-self: stretch; /* Make image stretch to full bar height */
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .bar p {
+            margin: 0;
+            padding: 0 var(--base-spacing);
+        }
+
+        .bar-row-2 {
+            display: flex;
+            gap: var(--base-spacing);
+        }
+
+        .bar-two-thirds {
+            flex: 2;
+        }
+
+        .bar-one-third {
+            flex: 1;
+        }
+
+        /* Content Blocks Section */
+        .content-blocks {
+            display: grid;
+            /* 第一格佔 2 份寬度，其餘四格各佔 1 份 */
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: var(--base-spacing);
+            align-items: stretch; /* 確保同一列的 block 高度完全一致 */
+        }
+
+        .block {
+            display: flex;
+            flex-direction: column;
+            position: relative;   /* 作為內部絕對定位元素的基準 */
+            height: 100%;         /* 填滿 Grid 賦予的高度 */
+            overflow: hidden;     /* 隱藏超出區塊的圖片範圍 */
+        }
+
+        .block .bg-image {
+            width: 100%;
+            height: 100%;       
+            /* 💡 改回 cover：圖片會等比例放大縮小，並自動裁切切齊區塊，絕不變形 */
+            object-fit: cover;  
+        }
+
+        .block .star {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: yellow;
+            font-size: 1.2rem;
+            text-shadow: 0 0 3px black;
+            z-index: 2;
+        }
+
+        .block .text-overlay {
+            position: absolute;
+            bottom: 0;           /* 💡 完美置底 */
+            left: 0;
+            right: 0;
+            /* 💡 灰色半透明背景 */
+            background-color: rgba(128, 128, 128, 0.65); 
+            color: white;
+            padding: 12px 15px;  /* 上下 12px，左右 15px */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 2;          /* 確保蓋在圖片上方 */
+        }
+
+        .block .text-overlay p {
+            margin: 0;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-title">My Website</div>
+        <nav>
+            <ul class="navbar-menu">
+                <li><a href="#">Item 1 </a></li>
+                <li><a href="#">Item 2</a></li>
+                <li><a href="#">Item 3</a></li>
+                <li><a href="#">Item 4</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="welcome-section">
+        <h1>Welcome to Gantz Space</h1>
+    </div>
+
+    <main class="main-content">
+        <section class="bars-section">
+            <div class="bar bar-full">
+                <img src="gantz_pic.jpg" alt="Content Image">
+                <p>Promotion 1</p>
+                <!--This bar takes up the full width.-->
+            </div>
+            <div class="bar-row-2">
+                <div class="bar bar-two-thirds">
+                    <img src="gantz_pic.jpg" alt="Content Image">
+                    <p>Promntion 2</p>
+                    <!--This bar takes up two-thirds of the width.-->
+                </div>
+                <div class="bar bar-one-third">
+                    <img src="gantz_pic.jpg" alt="Content Image">
+                    <p>Promotion 3</p>
+                    <!--One-third.-->
+                </div>
+            </div>
+        </section>
+
+        <section class="content-blocks">
+            <div class="block" id="block1"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 1"><span class="star">★</span><div class="text-overlay"><p>Room 1</p></div></div>
+            <div class="block" id="block2"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 2"><span class="star">★</span><div class="text-overlay"><p>Room 2</p></div></div>
+            <div class="block" id="block3"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 3"><span class="star">★</span><div class="text-overlay"><p>Room 3</p></div></div>
+            <div class="block" id="block4"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 4"><span class="star">★</span><div class="text-overlay"><p>Room 4</p></div></div>
+            <div class="block" id="block5"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 5"><span class="star">★</span><div class="text-overlay"><p>Room 5</p></div></div>
+            <div class="block" id="block6"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 6"><span class="star">★</span><div class="text-overlay"><p>Room 6</p></div></div>
+            <div class="block" id="block7"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 7"><span class="star">★</span><div class="text-overlay"><p>Room 7</p></div></div>
+            <div class="block" id="block8"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 8"><span class="star">★</span><div class="text-overlay"><p>Room 8</p></div></div>
+            <div class="block" id="block9"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 9"><span class="star">★</span><div class="text-overlay"><p>Room 9</p></div></div>
+            <div class="block" id="block10"><img class="bg-image" src="gantz_pic.jpg" alt="Content Image 10"><span class="star">★</span><div class="text-overlay"><p>Room 10</p></div></div>
+        </section>
+    </main>
+</body>
+</html>
