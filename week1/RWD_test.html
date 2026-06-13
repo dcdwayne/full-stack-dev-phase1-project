@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="En">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -172,6 +172,54 @@
             margin: 0;
             font-size: 0.8rem;
             line-height: 1.4;
+        }
+
+        /* 響應式設計: 600px < screen width <= 1200px */
+        @media (min-width: 601px) and (max-width: 1200px) {
+            .main-content {
+                width: 90%;
+                max-width: none; /* 取消原有的 1200px 限制以符合 90% 定義 */
+            }
+
+            /* Bars 佈局調整 */
+            .bars-section {
+                display: flex;
+                flex-direction: column-reverse; /* 讓 Promotion 2 & 3 容器移到第一列 */
+            }
+
+            .bar-row-2 {
+                display: flex;
+                gap: var(--base-spacing);
+            }
+
+            .bar-row-2 .bar {
+                flex: 1; /* 第一列的兩個 column 各佔 50% */
+            }
+
+            .bar-full {
+                width: 100%; /* 第二列佔 100% */
+            }
+
+            .bar img {
+                width: 80px;
+                height: 50px;
+                object-fit: contain; /* 維持原始比例 */
+            }
+
+            /* Content Blocks 佈局調整 */
+            .content-blocks {
+                grid-template-columns: repeat(4, 1fr); /* 主要為 4 欄 (25%) */
+            }
+
+            /* 最後兩個 block (Room 9, 10) 各佔 50% 寬度 */
+            .block:nth-child(9),
+            .block:nth-child(10) {
+                grid-column: span 2;
+            }
+
+            .block .bg-image {
+                object-fit: contain; /* 任何圖片皆維持原始比例 */
+            }
         }
     </style>
 </head>
