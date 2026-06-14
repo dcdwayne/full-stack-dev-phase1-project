@@ -36,7 +36,7 @@
 
         .navbar-title {
             font-weight: bold;
-            font-size: 1.5rem; /* 30px */
+            /* ❌ 刪除 font-size: 1.5rem; */
         }
 
         .navbar-menu {
@@ -56,18 +56,19 @@
         /* Welcome Section */
         .welcome-section {
             background-color: #ddeef8;
-            font-weight: bold;
-            font-size: 2rem; /* 40px */
             padding: 30px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 250px;
             text-align: center;
+            /* ❌ 刪除這裡的 font-size: 2rem; 與 font-weight */
         }
 
         .welcome-section h1 {
             margin: 0;
+            font-weight: bold;
+            font-size: 2rem; /* 💡 移到這裡，確保它絕對是 40px */
         }
 
         /* Main Content Wrapper */
@@ -95,12 +96,13 @@
             background-color: #ccdde8;
             border: 1px solid #ddd;
             overflow: hidden;
+            height: 50px; /* 💡 關鍵修正：將 50px 的高度限制提昇到基礎設定 */
         }
 
         .bar img {
             width: 80px;
-            align-self: stretch;
-            object-fit: cover; /* 統一使用 cover */
+            height: 100%; /* 💡 圖片 100% 填滿剛設定好 50px 的父容器 (對應需求 full height) */
+            object-fit: cover;
             flex-shrink: 0;
         }
 
@@ -193,7 +195,7 @@
 
         .block .text-overlay p {
             margin: 0;
-            font-size: 0.8rem;
+            /* ❌ 刪除 font-size: 0.8rem; */
             line-height: 1.4;
         }
 
@@ -297,10 +299,10 @@
     <div class="side-menu" id="sideMenu">
         <div class="close-icon" id="closeBtn">&times;</div>
         <ul style="list-style: none; padding: 0;">
-            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 1</a></li>
-            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 2</a></li>
-            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 3</a></li>
-            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; font-size: 1.2rem;">Item 4</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; ">Item 1</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; ">Item 2</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; ">Item 3</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333; ">Item 4</a></li>
         </ul>
     </div>
 
