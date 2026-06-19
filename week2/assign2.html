@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2 Assignment</title>
+    <style>
+        /* 控制外層總框框 */
+        .character-card {
+            width: 300px;          /* 設定你想要的卡片寬度 */
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;    /* 順便給它個美美的圓角 */
+            overflow: hidden;      /* 💡 核心：超過這個框框的東西通通無情裁切 */
+            background-color: #fff;
+        }
+
+        /* 控制裡面的圖片（實現自動裁切） */
+        .character-card img {
+            width: 100%;           /* 寬度隨外框填滿 */
+            height: 500px;         /* 🛑 核心：設定你想要「自動裁切」的高度線 */
+            object-fit: cover;     /* 🌟 神器：圖片會自動置中、裁切，絕對不壓扁拉伸 */
+            display: block;        /* 消除圖片下方預設的微小空白縫隙 */
+        }
+
+        .character-card p {
+            margin: 0;
+            padding: 0 10px 10px 10px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Week 2 Assignment</h1>
+    <div class="character-card">
+        <img src="S__67346453.jpg" alt="悟空">
+        <div>
+            <p>大話西遊-悟空</p>
+        </div>
+    </div>
+    <div>Please open the browser's Developer Tools (F12) to view the console output.</div>
+<script>
+        // ======= Task 1 =======
+        const locations = {
+            "悟空": {x: 0, y: 0, group: 0},
+            "辛巴": {x: -3, y: 3, group: 0},
+            "貝吉塔": {x: -4, y: -1, group: 0},
+            "特南克斯": {x: 1, y: -2, group: 0},
+            "丁滿": {x: -1, y: 4, group: 1},
+            "弗利沙": {x: 4, y: -1, group: 1}
+        };
+
+        function func1(name) {
+            if (!(name in locations)){
+                console.log(`角色 ${name} 不存在於位置資料中`);
+                return;
+            }
+
+            const target_group = locations[name].group;
+
+            let distances = {};
+
+            for (let [otherName, otherInfo] of Object.entries(locations)) {
+                if (otherName === name) continue; // 跳過自己
+
+                let distance = 0;
+
+                if (otherInfo.group === target_group) {
+                    distance = Math.abs(locations[name].x - otherInfo.x) +
+                               Math.abs(locations[name].y - otherInfo.y);
+                } else if (!(otherInfo.group === target_group)) {
+                    distance = Math.abs(locations[name].x - otherInfo.x) +
+                               Math.abs(locations[name].y - otherInfo.y)+2 ;
+                }
+                    distances[otherName] = distance;
+                }
+
+            // 先計算出最大與最小的距離數值
+            const distValues = Object.values(distances);
+            const minDist = Math.min(...distValues); // 類似 min(distances.values())
+            const maxDist = Math.max(...distValues); // 類似 max(distances.values())
+
+            // 模擬 List Comprehension (過濾出符合最值的角色)
+            const closestCharacters = Object.keys(distances).filter(char => distances[char] === minDist);
+            const farthestCharacters = Object.keys(distances).filter(char => distances[char] === maxDist);
+
+            // 使用 .join() 把陣列轉成乾淨的字串
+            const farthestStr = farthestCharacters.join("、");
+            const closestStr = closestCharacters.join("、");
+
+            // 使用反引號 ` 進行字串插值 (Template Literals) 印出成果
+            console.log(`與 ${name} 距離最遠的角色是 ${farthestStr}; 距離最近的角色是 ${closestStr}`);
+        }
+        
+        // ======= Task 2 =======
+        const services = [
+            {name: "S1", r: 4.5, c: 1000},
+            {name: "S2", r: 3, c: 1200},
+            {name: "S3", r: 3.8, c: 800}
+        ];
+
+        function func2(ss, start, end, criteria) {
+        
+            // 加入技師的排班表
+            for (let service of ss) {
+                if (!("schedule" in service)) {
+                    service["schedule"] = []; 
+                }
+            }
+
+            let op; // 外面宣告變數
+
+            if (criteria.includes(">=")) {          // 使用 .includes() 代替 in
+                op = ">=";
+            } else if (criteria.includes("<=")) {   // elif 改成 else if
+                op = "<=";
+            } else if (criteria.includes("=")) {
+                op = "=";
+            } else {
+                console.log("條件格式錯誤");
+                return; 
+            }
+
+            const [field, valueStr] = criteria.split(op);
+            let targetValue;
+
+            if (field === "name") {
+                targetValue = valueStr
+            } else if (field === "r" || field === "c") {
+                targetValue = parseFloat(valueStr);
+            } else {
+                console.log("條件欄位錯誤");
+                return;
+            }
+
+            let bestService = null;
+            let minDiff = Infinity;
+
+            // ======= 技師選拔主迴圈開始 =======
+            for (let service of ss) {
+                // 檢查時間衝突
+                let isConflict = false;
+
+                for (let [oldStart, oldEnd] of service.schedule) {
+                // 注意：Python 的 and 在 JS 裡面要寫成 &&
+                    if (start < oldEnd && oldStart < end) {
+                        isConflict = true;
+                        break; // 砸碎內層迴圈
+                    }
+                }
+                if (isConflict) {
+                    continue; // 跳過外層迴圈當前這回合 時間衝突，無情淘汰，換下一位
+                }
+
+                // 檢查條件是否匹配
+                let svValue = service[field]; // 動態取得條件值
+                let isMatch = false;
+
+                if (op === ">=" && svValue >= targetValue) {
+                    isMatch = true;
+                } else if (op === "<=" && svValue <= targetValue) {
+                    isMatch = true;
+                } else if (op === "=" && svValue == targetValue) {
+                    isMatch = true;
+                }
+                 
+                // 如果匹配成功，進入擂台賽，找出最適合的技師
+                if (isMatch == true) {
+                    if (field === "name") {
+                        minDiff = 0; // 名字完全匹配，差距為 0
+                        bestService = service;
+                    } else {
+                        let diff = Math.abs(svValue - targetValue); // 計算差距，越小越好
+                        if (diff < minDiff){
+                            minDiff = diff;
+                            bestService = service;
+                        }
+                    }
+                }
+            }
+
+            if (bestService) {
+                // 💡 核心補強：把時間推進班表，留下記憶！
+                bestService.schedule.push([start, end]);
+                console.log(` ${bestService.name}`);
+                return;
+            } else {
+                console.log("Sorry");
+            }
+        }
+        // ======= Task 3 =======
+        function func3(index) {
+            let initNum = 25;
+            const sequence = [-2, -3, 1, 2];
+            const numSequence = [];
+
+            for (let i = 0; i < (index + 1) ; i++) {
+                numSequence.push(initNum); // 先存當前的數字進陣列（跟 Python 邏輯一致）
+                initNum += sequence[i % 4]; // 調整數值，準備給下一圈用
+            }
+            console.log(numSequence[index]);
+        }
+
+        // ======= Task 4 =======
+        function func4(sp, stat, n) {
+            const availableSeat = [];
+            for (let i = 0 ; i < stat.length; i++) {
+                if (stat[i] === "0") {
+                    availableSeat.push(sp[i]);
+                } else if (stat[i] === "1") {
+                    availableSeat.push(0);
+                }
+            }
+
+            let mostFittedcar = null;
+            let minDiff = Infinity;
+            
+            for (let i = 0; i < availableSeat.length; i++) { // len() 改為 .length
+                let diff = Math.abs(availableSeat[i] - n);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    mostFittedcar = i ;
+                }
+            }
+            console.log(mostFittedcar);
+        }
+
+        // ======= 測試執行測試資料 =======
+        console.log("-- Task 1 --");
+        func1("辛巴");
+        func1("悟空");
+        func1("弗利沙");
+        func1("特南克斯");
+
+        console.log("\n-- Task 2 --");
+        func2(services, 15, 17, "c>=800");
+        func2(services, 11, 13, "r<=4");
+        func2(services, 10, 12, "name=S3");
+        func2(services, 15, 18, "r>=4.5");
+        func2(services, 16, 18, "r>=4");
+        func2(services, 13, 17, "name=S1");
+        func2(services, 8, 9, "c<=1500");
+        
+        console.log("\n-- Task 3 --");
+        func3(1);
+        func3(5);
+        func3(10);
+        func3(30);
+
+        console.log("\n-- Task 4 --");
+        func4([3, 1, 5, 4, 3, 2], "101000", 2);
+        func4([1, 0, 5, 1, 3], "10100", 4)
+        func4([4, 6, 5, 8], "1000", 4)
+    </script>
+</body>
+</html>
