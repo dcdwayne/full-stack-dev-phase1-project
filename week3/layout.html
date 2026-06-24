@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment-3</title>
+    <style>
+        /* General & Base Styles */
+        :root {
+            --base-spacing: 20px;
+        }
+
+        html {
+            font-size: 20px;
+        }
+
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .navbar-title {
+            font-weight: bold;
+        }
+
+        .navbar-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 30px;
+        }
+
+        .navbar-menu a {
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            background-color: #ddeef8;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+            text-align: center;
+        }
+
+        .welcome-section h1 {
+            margin: 0;
+            font-weight: bold;
+            font-size: 2rem;
+        }
+
+        /* Main Content Wrapper */
+        .main-content {
+            max-width: 1200px;
+            margin: var(--base-spacing) auto;
+        }
+
+        /* --- Base Styles (> 1200px) --- */
+        .bars-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--base-spacing);
+            margin-bottom: var(--base-spacing);
+        }
+
+        .bars-section .bar:first-child {
+            grid-column: span 2;
+        }
+
+        .bar {
+            display: flex;
+            align-items: center;
+            background-color: #ccdde8;
+            border: 1px solid #ddd;
+            overflow: hidden;
+            height: 50px;
+        }
+
+        .bar img {
+            width: 80px;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .bar p {
+            margin: 0;
+            padding-left: 15px;
+        }
+
+        /* 漢堡選單圖標與側邊欄樣式 */
+        .burger-icon {
+            display: none;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 20px;
+            transition: right 0.3s ease;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .close-icon {
+            text-align: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        /* Content Blocks Section */
+        .content-blocks {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: var(--base-spacing);
+            align-items: stretch;
+        }
+
+        .block {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: 200px; /* 給予一個固定的基礎高度，讓 Grid 排版更美觀 */
+            overflow: hidden;
+        }
+
+        .block .bg-image {
+            width: 100%;
+            height: 100%;       
+            object-fit: cover;  
+        }
+
+        .block .star {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: yellow;
+            font-size: 1.2rem;
+            text-shadow: 0 0 3px black;
+            z-index: 2;
+        }
+
+        .block .text-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(128, 128, 128, 0.65); 
+            color: white;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .block .text-overlay p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        /* 載入更多按鈕樣式 */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .load-more-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .load-more-btn:hover {
+            background-color: #e6e6e6;
+        }
+
+        /* --- 響應式設計: 600px < screen width <= 1200px --- */
+        @media (max-width: 1200px) {
+            .main-content {
+                width: 90%;
+                max-width: none;
+            }
+
+            .bars-section {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .bars-section .bar:first-child {
+                grid-column: span 1;
+            }
+
+            .bars-section .bar:last-child {
+                grid-column: span 2;
+            }
+
+            .content-blocks {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            /* 修改 RWD 的卡片擴展邏輯：讓後面新增的也符合每列 4 欄，最後多出來的填滿 */
+            .block:nth-child(4n+1) {
+                /* 可根據設計微調，維持原本 grid 自動排序即可 */
+            }
+        }
+
+        /* --- 響應式設計: 360px < screen width <= 600px --- */
+        @media (max-width: 600px) {
+            .navbar-menu {
+                display: none;
+            }
+
+            .burger-icon {
+                display: block;
+            }
+
+            .bars-section {
+                grid-template-columns: 1fr;
+            }
+
+            .bars-section .bar:last-child {
+                grid-column: span 1;
+            }
+
+            .content-blocks {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-title">My Favorites</div>
+        <nav>
+            <ul class="navbar-menu">
+                <li><a href="#">Item 1</a></li>
+                <li><a href="#">Item 2</a></li>
+                <li><a href="#">Item 3</a></li>
+                <li><a href="#">Item 4</a></li>
+            </ul>
+            <img src="burger.png" alt="Menu" class="burger-icon" id="burgerBtn">
+        </nav>
+    </header>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="close-icon" id="closeBtn">&times;</div>
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333;">Item 1</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333;">Item 2</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333;">Item 3</a></li>
+            <li style="margin: 20px 0;"><a href="#" style="text-decoration: none; color: #333;">Item 4</a></li>
+        </ul>
+    </div>
+
+    <div class="welcome-section">
+        <h1>Welcome to Taipei City</h1>
+    </div>
+
+    <main class="main-content">
+        <section class="bars-section" id="bar-container"></section>
+
+        <section class="content-blocks" id="grid-container"></section>
+
+        <div class="load-more-container">
+            <button class="load-more-btn" id="loadMoreBtn">Load More</button>
+        </div>
+    </main>
+
+    <script>
+        const burgerBtn = document.getElementById('burgerBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const sideMenu = document.getElementById('sideMenu');
+
+        burgerBtn.onclick = () => sideMenu.classList.add('active');
+        closeBtn.onclick = () => sideMenu.classList.remove('active');
+
+        // --- 全域變數 ---
+        let allAttractions = [];
+        let currentIndex = 0; 
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const url1 = "https://cwpeng.github.io/test/assignment-3-1";
+            const url2 = "https://cwpeng.github.io/test/assignment-3-2";
+
+            try {
+                // 1. 同時取得兩個網路 API 的 JSON
+                const [res1, res2] = await Promise.all([fetch(url1), fetch(url2)]);
+                const data1 = await res1.json();
+                const data2 = await res2.json();
+
+                // 2. 抓出真實的陣列位置 (依據你貼出的 JSON 結構)
+                const infoList = data1.rows;       // 基本資料陣列
+                const imgList = data2.rows;        // 圖片資料陣列
+                const hostUrl = data2.host;        // "https://cwpeng.github.io/test"
+
+                // 3. 【關鍵步驟】建立圖片的字典對照表 (就像 Python 的 Dictionary Lookup)
+                // 讓 serial 當作 Key，圖片字串當作 Value
+                const imgLookup = {};
+                imgList.forEach(item => {
+                    imgLookup[item.serial] = item.pics;
+                });
+
+                // 4. 開始合併資料：遍歷基本資料，去對照表撈圖片，並清理格式
+                allAttractions = infoList.map(info => {
+                    const serial = info.serial;
+                    const picsString = imgLookup[serial] || ""; 
+                    
+                    // 處理圖片網址：擷取第一張圖，並加上 host
+                    const firstImgPath = extractFirstImagePath(picsString);
+                    const fullImgUrl = firstImgPath ? (hostUrl + firstImgPath) : "";
+
+                    // 回傳整理後乾淨的物件
+                    return {
+                        title: info.sname,      // 景點名稱
+                        imgUrl: fullImgUrl      // 完整的圖片網址
+                    };
+                });
+
+                // 5. 渲染最一開始的畫面
+                renderInitial();
+
+                // 6. 綁定「Load More」按鈕的點擊事件
+                document.getElementById("loadMoreBtn").onclick = loadMore;
+
+            } catch (error) {
+                console.error("資料載入失敗:", error);
+            }
+        });
+
+        // 💡 針對這種黏在一起的字串設計的擷取函式
+        function extractFirstImagePath(picsString) {
+            if (!picsString) return "";
+            
+            // 使用正則表達式，非貪婪配對 (.*?) 一直到遇到第一個 .jpg 或 .png 結束
+            // 例如輸入: "/res/1.jpg/res/2.jpg"，會精準切出 "/res/1.jpg"
+            const match = picsString.match(/(.*?)\.(jpg|png|jpeg|gif)/i);
+            
+            // 如果有配對到，match[0] 就會是包含副檔名的第一張圖路徑
+            return match ? match[0] : "";
+        }
+
+        // 渲染初次載入的結構：前 3 筆到橫條，再 10 筆到方塊
+        function renderInitial() {
+            const barContainer = document.getElementById("bar-container");
+            const gridContainer = document.getElementById("grid-container");
+
+            for (let i = 0; i < 3; i++) {
+                if (allAttractions[i]) {
+                    // 💡 這裡直接使用我們整理好的 .title 和 .imgUrl
+                    createBarCard(allAttractions[i].title, allAttractions[i].imgUrl, barContainer);
+                    currentIndex++;
+                }
+            }
+
+            for (let i = 0; i < 10; i++) {
+                if (allAttractions[currentIndex]) {
+                    createGridCard(allAttractions[currentIndex].title, allAttractions[currentIndex].imgUrl, gridContainer);
+                    currentIndex++;
+                }
+            }
+        }
+
+        // 💡 任務四：每次點選載入更多，再載入接下來的 10 筆
+        function loadMore() {
+            const gridContainer = document.getElementById("grid-container");
+            let targetCount = 10;
+
+            for (let i = 0; i < targetCount; i++) {
+                if (currentIndex < allAttractions.length) {
+                    createGridCard(allAttractions[currentIndex].title, allAttractions[currentIndex].imgUrl, gridContainer);
+                    currentIndex++;
+                } else {
+                    document.getElementById("loadMoreBtn").style.display = "none";
+                    break;
+                }
+            }
+        }
+        // 建立上方橫條卡片 (不使用 innerHTML)
+        function createBarCard(title, imgUrl, container) {
+            const barDiv = document.createElement("div");
+            barDiv.className = "bar"; // 對應你原本寫好的 CSS
+
+            const img = document.createElement("img");
+            img.src = imgUrl;
+            img.alt = title;
+
+            const p = document.createElement("p");
+            p.textContent = title;
+
+            barDiv.appendChild(img);
+            barDiv.appendChild(p);
+            container.appendChild(barDiv);
+        }
+
+        // 建立下方 Grid 方塊卡片 (嚴格遵守不用 innerHTML，完美重現原本 HTML 內的所有節點)
+        function createGridCard(title, imgUrl, container) {
+            const blockDiv = document.createElement("div");
+            blockDiv.className = "block";
+
+            const img = document.createElement("img");
+            img.className = "bg-image";
+            img.src = imgUrl;
+            img.alt = title;
+
+            const starSpan = document.createElement("span");
+            starSpan.className = "star";
+            starSpan.textContent = "★";
+
+            const overlayDiv = document.createElement("div");
+            overlayDiv.className = "text-overlay";
+
+            const p = document.createElement("p");
+            p.textContent = title;
+
+            // 組裝肚子裡的節點
+            overlayDiv.appendChild(p);
+            blockDiv.appendChild(img);
+            blockDiv.appendChild(starSpan);
+            blockDiv.appendChild(overlayDiv);
+
+            // 掛載到大容器
+            container.appendChild(blockDiv);
+        }
+    </script>
+</body>
+</html>

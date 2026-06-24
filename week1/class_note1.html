@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!--
+    1.網頁版面中的換行規則?
+    - 在程式碼中，換行render出來也不會換行喔
+    - 標籤的顯示模式設定 display，其實就是CSS的設定喔！
+      - block 區塊模式 (會自動換行)
+      - inline 行內模式
+    - 隨時可以使用 <br/> 無內文的區域模式標籤換行
+
+    2.最常用的 HTML 標籤：
+      - <div>：沒有預設模式(乾淨的)的 block 區塊模式標籤
+      - <span>：沒有預設樣式的 inline 行內模式標籤
+        ps: 像是h1 h2 其實有偷偷預設放大
+
+    3.標籤區塊的尺寸怎麼決定：
+      - 寬度：預設長滿整個父標籤的寬度，透過 width 設定。
+      - 高度：預設根據內容彈性縮放，透過 height 設定。
+
+    補充：容器內做版面配置的工具 grid 與 flex 
+    google預覽器推廣使用"語意標籤"，這樣可以利用程式碼去直觀了解網頁內容
+    -->
+    <h2>測試<br/>一下</h2>
+    <a href ="https://www.google.com/">Google</a>
+    <div style="border:1px solid blue; width:50%; height:100px">
+        Hello world~
+        <div style="background-color:yellow">testtest</div>
+        <br/>Line 3 <br/>Line 4
+    </div>
+    
+    </br>
+    <b>好der<span style ="color:red; display:inline" >好der</span>
+    </b>
+    <ul>
+        <li>第一個</li>
+        <li>第二個</li>
+    </ul>
+</body>
+</html>
