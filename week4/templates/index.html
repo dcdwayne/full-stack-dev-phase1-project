@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首頁 - 登入與查詢系統</title>
+    <style>
+        /* 基礎版面重置與置中設定 */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4; 
+        }
+
+        /* 整個畫面的外框容器 */
+        .main-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-top: 50px;
+        }
+
+        /* 天藍色標題區塊 */
+        .header {
+            background-color: #3d9de0; 
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* 表單內容區塊 */
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .content h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 22px;
+            color: #555555;
+        }
+
+        /* 輸入框的排版 (使用 Flexbox 讓文字與輸入框水平對齊) */
+        .form-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            width: 50px; 
+            text-align: right;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 220px;
+            padding: 5px;
+            border: 1px solid #aaa;
+            font-size: 16px;
+        }
+
+        /* 同意條款區塊 */
+        .checkbox-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+
+        .checkbox-group input {
+            margin-left: 10px;
+            transform: scale(1.2); 
+        }
+
+        /* 按鈕樣式 */
+        .submit-btn {
+            padding: 8px 30px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #aaa;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #e2e6ea;
+        }
+
+        /* 區塊分隔線 */
+        .divider {
+            border: 0;
+            border-top: 1px solid #e0e0e0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            歡迎光臨，請輸入信箱密碼
+        </div>
+        
+        <div class="content">
+            <h2>登入系統</h2>
+            <form id="loginForm" action="/login" method="POST">
+                <div class="form-group">
+                    <label for="email">信箱</label>
+                    <input type="text" id="email" name="email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">密碼</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                
+                <div class="checkbox-group">
+                    <label for="agree">同意條款</label>
+                    <input type="checkbox" id="agree" name="agree">
+                </div>
+                
+                <button type="submit" class="submit-btn">登入</button>
+            </form>
+        </div>
+
+        <hr class="divider">
+
+        <div class="content">
+            <h2>取得旅館資訊</h2>
+            <div class="form-group">
+                <label for="hotelId">編號</label>
+                <input type="text" id="hotelId">
+            </div>
+            <button type="button" id="getHotelBtn" class="submit-btn">取得</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 登入表單的驗證 (Task 1) ---
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            const isAgreed = document.getElementById('agree').checked;
+            
+            if (!isAgreed) {
+                event.preventDefault(); // 阻止表單送出
+                alert('請勾選同意條款');
+            }
+        });
+
+        // --- 取得旅館資訊的驗證與跳轉 (Task 4) ---
+        document.getElementById('getHotelBtn').addEventListener('click', function() {
+            // 抓取輸入框的值
+            const hotelIdValue = document.getElementById('hotelId').value;
+            
+            // 將輸入的字串轉換為數字
+            const num = Number(hotelIdValue);
+
+            // 檢查是否為正整數：必須是數字、必須是整數、必須大於 0
+            if (isNaN(num) || !Number.isInteger(num) || num <= 0) {
+                alert('請輸入正整數');
+            } else {
+                // 若為正整數，透過 JS 改變網址來跳轉到對應的 Path Parameter
+                window.location.href = "/hotels/" + num;
+            }
+        });
+    </script>
+
+</body>
+</html>
