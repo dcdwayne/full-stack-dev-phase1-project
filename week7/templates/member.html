@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員成功登入頁面</title>
+    <style>
+        /* 基礎版面重置與置中設定 */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        /* 整個畫面的外框容器 */
+        .main-container {
+            width: 100%;
+            max-width: 650px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+
+        /* 天藍色標題區塊 */
+        .header {
+            background-color: #3d9de0;
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* 表單內容區塊 */
+        .content {
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .content h2 {
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 22px;
+            color: #555555;
+        }
+
+        /* 留言輸入框的樣式 */
+        #message-content {
+            padding: 5px;          /* 內距：把輸入框撐大一點，打字比較舒服 */
+            width: 200px;          /* 寬度：稍微拉長一點 */
+            margin-bottom: 15px;   /* 外距：重點！往下推開 15px，這樣就不會跟按鈕黏在一起 */
+        }
+
+        /* 送出按鈕的樣式 */
+        .message-submit-btn {
+            padding: 5px 15px;     /* 內距：讓按鈕變大，比較好點擊 */
+            cursor: pointer;       /* 滑鼠移過去會變成手指圖示 */
+            background-color: #f8f9fa;
+            border: 1px solid #aaa;
+            border-radius: 2px;
+        }
+
+        .message-submit-btn:hover {
+            background-color: #e2e6ea; /* 滑鼠游標懸浮時稍微變色 */
+        }
+
+        /* MCP 伺服器設定：說明文字區塊 */
+        .mcp-instruction {
+            margin-bottom: 15px; /* 把下方的按鈕推開 */
+        }
+
+        /* MCP 伺服器設定：Token 顯示區塊 */
+        #token-display {
+            margin-top: 20px;        /* 把上方的按鈕推開 */
+            word-break: break-all;   /* 讓沒有空格的超長 Token 自動換行 */
+            color: #0056b3;        /* 換個顏色凸顯金鑰 */
+            font-weight: bold;       /* 字體加粗 */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="header">
+            歡迎光臨，這是會員頁
+        </div>
+        <div class="content">
+            <h2>{{ name }}，歡迎登入系統</h2>
+            <a href="/logout" class="logout-btn">登出系統</a>
+        </div>
+    
+    <hr/>
+    
+    <div class="content">
+        <h2>MCP伺服器設定</h2>
+
+        <div class="mcp-instruction">
+            請使用 http://127.0.0.1:8000/mcp/網址<br/>
+            點擊產生 Token 取得金鑰
+        </div>
+        <button class="message-submit-btn" onclick="createToken();">產生 Token</button>
+
+        <div id="token-display" >
+             <!-- 這裡會放金鑰 -->
+        </div>
+
+    </div>
+
+    <hr/>
+
+    <div class="content">
+        <h2>快來留言吧</h2>
+        <div>
+            內容 <input type="text" id="message-content"/>
+        </div>
+        <button class="message-submit-btn" onclick="createMessage();">送出</button>
+    </div>
+
+     <hr/>
+
+     <div class="content" id="message-board">
+        <!-- 這裡會放留言板的內容 -->
+     </div>
+            
+    </div>
+
+    <script>
+    // --- (Task 5) ---    
+    async function createMessage(){
+        /*這邊用於留言系統，可以把留言塞到資料庫*/
+        let content = document.querySelector("#message-content").value;
+        console.log(content);
+
+        let response = await fetch("/api/message",{
+            method:"POST",
+            headers: {
+                    "Content-Type": "application/json" // 補上 JSON 標頭
+            },
+            body:JSON.stringify({"content":content})
+        }); 
+        let result = await response.json();
+        console.log(result);
+        /*成功塞進去後，馬上顯示所有留言。讓使用者立即看到效果*/
+        if(result.ok){
+            getMessages();
+        }
+    }
+
+    async function getMessages(){
+        let response = await fetch("/api/message"); 
+        let result = await response.json(); 
+
+        if(result.error) { return; } // 如果未登入就中斷
+
+        let board = document.querySelector("#message-board");
+        board.innerHTML = "";  
+
+        // 注意！陣列是 result.data
+        let messages = result.data; 
+        for(let i=0; i<messages.length; i++){
+            let msg = messages[i];
+            let html = "<div>" + msg.name + " : " + msg.content; // 後端是傳 name 不是 author
+
+            // 根據 self 屬性決定要不要畫出叉叉按鈕
+            if(msg.self === true){
+                html += " <button onclick='deleteMessage(" + msg.id + ")'>X</button>";
+            }
+
+            html += "</div>";
+            board.innerHTML += html;
+        }
+    }
+    // --- (Task 6) ---
+    async function deleteMessage(id){
+        // 根據作業規格，加上 confirm 確認機制
+        if (!confirm("確定要刪除這則留言嗎？")) {
+            return; // 如果使用者按取消，就結束函式不發送 fetch
+        }
+
+        let response = await fetch("/api/message/"+id,{
+            method:"DELETE",
+        }); 
+        let result = await response.json(); 
+        if(result.ok){
+            getMessages();
+        }
+    }
+
+    // --- (MCP_Task 1) ---
+    async function createToken(){
+        let response = await fetch("/api/token",{
+            method:"PUT",
+        }); 
+
+        let result = await response.json(); 
+        console.log(result);
+        if(result.ok){
+            let tokenDisplay = document.querySelector("#token-display");
+            tokenDisplay.innerHTML = result.token;
+        }
+    }
+
+
+    // 網頁載入完成時，立刻去後端撈留言
+    getMessages(); 
+
+    </script>
+</body>
+
+</html>
